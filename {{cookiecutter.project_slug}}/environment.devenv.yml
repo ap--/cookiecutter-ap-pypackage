@@ -1,0 +1,29 @@
+#
+# Conda devenv environment for {{cookiecutter.project_slug}}
+#
+# Create the environment, do not install {{cookiecutter.project_slug}} in development mode:
+#   conda devenv
+# equivalent to:
+#   {{cookiecutter.conda_env.upper()}}_DEVEL="" conda devenv
+# Create the environment, install {{cookiecutter.project_slug}} in development mode:
+#   {{cookiecutter.conda_env.upper()}}_DEVEL=TRUE conda devenv
+#
+
+  {% raw %}{%{% endraw %} set {{cookiecutter.conda_env.upper()}}_DEVEL = os.environ.get('{{cookiecutter.conda_env.upper()}}_DEVEL', False) {% raw %}%}{% endraw %}
+
+name: {{cookiecutter.conda_env}}
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python>=3.6.1
+  - pip
+
+  # testing
+  - pytest>=6
+  - pytest-cov
+  - mypy
+
+  - pip:
+      - "-e ."  # [ {{cookiecutter.conda_env.upper()}}_DEVEL ]

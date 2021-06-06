@@ -1,0 +1,15 @@
+{
+  "full_name": "Andreas Poehlmann",
+  "email": "andreas@poehlmann.io",
+  "github_username": "ap--",
+  "project_name": "Poehlmann Python Package",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_short_description": "Make a Python package the way Andreas would make one.",
+  "conda_env": "{{ cookiecutter.project_slug }}",
+  "pypi_username": "poehlmann",
+  "open_source_license": [
+    "MIT license",
+    "GNU General Public License v3",
+    "Not open source"
+  ]
+}
