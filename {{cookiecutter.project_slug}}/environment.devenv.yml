@@ -8,9 +8,9 @@
 # Create the environment, install {{cookiecutter.project_slug}} in development mode:
 #   {{cookiecutter.conda_env.upper()}}_DEVEL=TRUE conda devenv
 #
-
-  {% raw %}{%{% endraw %} set {{cookiecutter.conda_env.upper()}}_DEVEL = os.environ.get('{{cookiecutter.conda_env.upper()}}_DEVEL', False) {% raw %}%}{% endraw %}
-
+# conda-devenv:
+#  {% raw %}{%{% endraw %} set {{cookiecutter.conda_env.upper()}}_DEVEL = os.environ.get('{{cookiecutter.conda_env.upper()}}_DEVEL', False) {% raw %}%}{% endraw %}
+#
 name: {{cookiecutter.conda_env}}
 
 channels:
