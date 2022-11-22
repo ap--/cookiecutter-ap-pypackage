@@ -8,39 +8,41 @@ jobs:
     name: {% raw %}pytest ${{ matrix.os }}::py${{ matrix.python-version }}{% endraw %}
     runs-on: {% raw %}${{ matrix.os }}{% endraw %}
     strategy:
-      max-parallel: 6
+      max-parallel: 7
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.10"]
+        python-version: ["3.11"]
         include:
           # we'll test the python support on ubuntu
           - os: ubuntu-latest
-            python-version: 3.9
+            python-version: "3.10"
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: "3.9"
           - os: ubuntu-latest
-            python-version: 3.7
+            python-version: "3.8"
+          - os: ubuntu-latest
+            python-version: "3.7"
     steps:
-    - uses: actions/checkout@v1
-    - name: Make python reference python3 because conda-devenv needs it
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+    - uses: actions/checkout@v3
+
     - name: Create the environment.yml via conda-devenv
+      shell: bash
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install --upgrade setuptools
-        python -m pip install git+https://github.com/ESSS/conda-devenv.git@2.1.1
+        python -m pip install --upgrade pip setuptools
+        python -m pip install packaging jinja2 pyyaml
+        python -m pip install git+https://github.com/ESSS/conda-devenv.git@$(curl https://api.github.com/repos/esss/conda-devenv/releases/latest -s | jq .name -r)
         python -m conda_devenv.devenv --env {{ cookiecutter.project_slug.upper() }}_DEVEL=TRUE --file environment.devenv.yml --print > environment.yml
+
     - name: Cache conda
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       env:
         # Increase this value to reset cache if etc/example-environment.yml has not changed
         CACHE_NUMBER: 0
       with:
         path: ~/conda_pkgs_dir
         key: {% raw %}${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}{% endraw %}
+
     - name: Setup conda
       uses: conda-incubator/setup-miniconda@v2
       with:
@@ -50,14 +52,18 @@ jobs:
         activate-environment: {{cookiecutter.conda_env}}
         use-only-tar-bz2: true
         auto-activate-base: false
+        miniforge-variant: Mambaforge
+        use-mamba: True
+
     - shell: bash -l {0}
       name: Test with pytest
       run: |
         conda info
         conda list
         pytest --cov=./{{cookiecutter.project_slug}} --cov-report=xml
+
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: {{cookiecutter.conda_env}}
 
@@ -79,8 +85,9 @@ jobs:
       - name: Run mypy
         run: |
           mypy {{cookiecutter.project_slug}}
+
   # DEPLOY TO TEST.PYPI ON SUCCESS
-  testdeploy:
+  test_deploy:
     needs: [tests, typing]
     name: deploy to test.pypi
     runs-on: ubuntu-latest
