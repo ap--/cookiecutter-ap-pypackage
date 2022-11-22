@@ -1,8 +1,8 @@
 [build-system]
+[build-system]
 requires = [
-  "setuptools >= 42",
-  "wheel",
-  "setuptools_scm[toml]>=3.4",
+  "setuptools >= 64",
+  "setuptools_scm[toml]>=6.2",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -51,4 +51,4 @@ profile = "black"
 py_version = "37"
 force_single_line = true
 add_imports = ["from __future__ import annotations"]
-extend_skip = ["setup.py", "docs/source/conf.py"]
+extend_skip = ["docs/source/conf.py"]
