@@ -1,5 +1,4 @@
 [build-system]
-[build-system]
 requires = [
   "setuptools >= 64",
   "setuptools_scm[toml]>=6.2",
